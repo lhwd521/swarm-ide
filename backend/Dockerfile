@@ -11,7 +11,7 @@ RUN bun install --frozen-lockfile
 # 复制源码
 COPY . .
 
-# 构建 Next.js
+# 构建 Next.js (standalone模式)
 RUN bun run build
 
 # 运行阶段
@@ -21,11 +21,12 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3017
+ENV HOSTNAME=0.0.0.0
 
-# 复制必要文件
+# 复制 standalone 输出
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3017
 
-CMD ["bun", "run", "server.js"]
+CMD ["node", "server.js"]
